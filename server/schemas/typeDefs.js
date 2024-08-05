@@ -35,7 +35,7 @@ const typeDefs = `
 
   type Mutation {
     addUser(prefName: String!, email: String!, password: String!): Auth
-    login(email: String!, password String!): Auth
+    login(email: String!, password: String!): Auth
     addDraw(drawData: DrawInput!): User
     deleteDraw(_id: ID!): User
   }
@@ -44,7 +44,7 @@ const typeDefs = `
     date: String
     
     question: String
-    cardsDrawn: [Card]
+    cardsDrawn: [String]
   }
 `
 
