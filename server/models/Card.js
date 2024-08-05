@@ -1,17 +1,24 @@
+// Import mongoose
+const mongoose = require("mongoose");
 // Retrieve Schema from mongoose
-const { Schema } = require("mongoose");
+const { Schema } = mongoose;
 
-// This is a subdocument schema, it will not becomes its own model, but it is being used the card scehma for the cardsDrawn array in Draw.js
+// Define structure of the Draw document
 const cardSchema = new Schema({
-  card: {
+  name: {
     type: String,
     required: true,
+    unique: true,
   },
+  /*
   reversed: {
     type: Boolean,
     required: true,
     default: false,
   },
+  */
 });
 
-module.exports = cardSchema;
+const Card = mongoose.model("Card", cardSchema);
+
+module.exports = Card;
