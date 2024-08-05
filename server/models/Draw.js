@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 // Retrieve Schema from mongoose
 const { Schema } = mongoose;
 // import schema from Card.js
-const cardSchema = require('./Card');
+const Card = require('./Card');
 
 // Define structure of the Draw document
 const drawSchema = new Schema({
@@ -11,15 +11,17 @@ const drawSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  /*
   drawType: {
     type: Number,
     required: true,
   },
+  */
   question: {
     type: String,
     trim: true,    
   },
-  cardsDrawn: [cardSchema],
+  cardsDrawn: [Card.schema],
 });
 
 const Draw = mongoose.model("Draw", drawSchema);
