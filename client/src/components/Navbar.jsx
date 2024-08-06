@@ -83,7 +83,7 @@ const Navbar = () => {
     <>
       <Header style={styles.header}>
         <div style={styles.logoContainer}>
-          <img style={styles.logo} src="/images/tarot-icon.png" alt="logo" />
+          <img style={styles.logo} src="./images/tarot-icon.png" alt="logo" />
           <h1>Tarot Ri.der</h1>
         </div>
         <Menu style={styles.menu} mode="horizontal" theme="dark" items={menuItems} />
