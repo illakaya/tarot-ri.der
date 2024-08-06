@@ -1,3 +1,4 @@
+import './App.css';
 import {
   ApolloClient,
   InMemoryCache,
@@ -7,13 +8,12 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
-const { Header, Content, Footer } = Layout;
 // If I want to use global states...
 // import { StoreProvider } from "./utils/GlobalState";
 import Navbar from "./components/Navbar";
 // Construct our main GraphQL API endpoint
 const httpLink = createHttpLink({
-  uri: "/grahpql",
+  uri: "/graphql",
 });
 
 // Construct request middleware that will attach the JWT to every request as an "authorization" header
@@ -43,18 +43,8 @@ function App() {
       
       {/* <StoreProvider> */}
       <Layout>
-        <Header >
-          <Navbar style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}/>
-        </Header>
-        <Content>
-          <Outlet />
-        </Content>
-        <Footer>
-          illakaya
-        </Footer>
+        <Navbar />
+        <Outlet />
       </Layout>
       {/* </StoreProvider> */}
       
