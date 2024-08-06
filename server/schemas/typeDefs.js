@@ -9,7 +9,6 @@ const typeDefs = `
   type Draw {
     _id: ID
     date: String
-    
     question: String
     cardsDrawn: [Card]
   }
