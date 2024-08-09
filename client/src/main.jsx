@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import App from "./App.jsx";
-import Error from "./pages/Error";
+import ErrorPage from "./pages/ErrorPage";
 import DrawCards from "./pages/DrawCards";
 import Profile from "./pages/Profile";
 import Card from "./pages/Card";
@@ -11,7 +11,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    error: < Error />,
+    errorElement: < ErrorPage />,
     children: [
       {
         index: true,
