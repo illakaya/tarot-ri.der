@@ -1,4 +1,4 @@
-import './App.css';
+import '../App.css';
 import {
   ApolloClient,
   InMemoryCache,
@@ -6,12 +6,11 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
 // If I want to use global states...
 // import { StoreProvider } from "./utils/GlobalState";
-import Navbar from "./components/Navbar";
-import Footer from './components/Footer';
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 // Construct our main GraphQL API endpoint
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -37,7 +36,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-function App() {
+function ErrorPage() {
   return (
     // Allow client data to be called in the application by passing it as a property
     <ApolloProvider client={client}>
@@ -45,13 +44,19 @@ function App() {
       {/* <StoreProvider> */}
       <Layout>
         <Navbar />
-        <Outlet />
+        <main>
+          <h1>404 - Oops! Page Not Found</h1>
+          <h1>
+            <span role="img" aria-label="Face With Rolling Eyes Emoji">
+              🙄
+            </span>
+          </h1>
+        </main>
         <Footer />
       </Layout>
-      {/* </StoreProvider> */}
-      
+    {/* </StoreProvider> */}
     </ApolloProvider>
   );
-}
+};
 
-export default App;
+export default ErrorPage;

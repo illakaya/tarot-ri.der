@@ -1,8 +1,8 @@
 const Card = () => {
   return (
-    <div className="container">
+    <main className="container">
       something else
-    </div>
+    </main>
   );
 };
 

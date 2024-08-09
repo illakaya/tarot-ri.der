@@ -2,9 +2,9 @@
 
 const SavedDraws = () => {
   return (
-    <div className="container">
+    <main className="container">
       something else again
-    </div>
+    </main>
   );
 };
 

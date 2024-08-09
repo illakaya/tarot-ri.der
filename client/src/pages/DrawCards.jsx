@@ -2,9 +2,9 @@
 
 const DrawCards = () => {
   return (
-    <div className="container">
+    <main className="container">
       something
-    </div>
+    </main>
   );
 };
 
