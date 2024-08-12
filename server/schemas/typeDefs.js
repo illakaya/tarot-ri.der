@@ -3,7 +3,7 @@
 const typeDefs = `
   type Card {
     name: String!
-    
+    val: Int
   }
 
   type Draw {
