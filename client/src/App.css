@@ -5,8 +5,12 @@
 }
 
 main {
+  text-align: center;
   padding: 1em 2em;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
 }
 
 footer {
