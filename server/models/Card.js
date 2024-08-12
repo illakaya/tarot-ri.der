@@ -10,6 +10,11 @@ const cardSchema = new Schema({
     required: true,
     unique: false,
   },
+  val: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
   /*
   reversed: {
     type: Boolean,
