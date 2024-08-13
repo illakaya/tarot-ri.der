@@ -3,7 +3,7 @@
 const typeDefs = `
   type Card {
     name: String!
-    val: Int
+    val: Int!
   }
 
   type Draw {
@@ -28,8 +28,8 @@ const typeDefs = `
   type Query {
     me: User
     draw(_id: ID!): Draw 
-    cards: [Card]
-    card(name: String!): Card
+    card(val: Int!): Card
+    allCards: [Card]
   }
 
   type Mutation {

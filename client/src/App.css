@@ -63,6 +63,11 @@ h6 {
   display: none;
 }
 
+.chosen-card {
+  width: 170px; /* Adjust size as needed */
+  height: 280px;
+}
+
 /* Media query for phone screens */
 @media (max-width: 600px) { /* Adjust the max-width value as needed for phone screens */
   .tarot-deck {
@@ -71,5 +76,9 @@ h6 {
   .tarot-card {
     width: 51px; /* 3/5ths of the original size */
     height: 84px; /* 3/5ths of the original size */
+  }
+  .chosen-card {
+    width: 85px; /* Adjust size as needed */
+    height: 140px;
   }
 }

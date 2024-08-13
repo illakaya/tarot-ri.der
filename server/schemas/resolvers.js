@@ -14,11 +14,11 @@ const resolvers = {
     draw: async (parent, { _id }) => {
       return await Product.findById(_id).populate('card');
     },
-    cards: async () => {
+    allCards: async () => {
       return await Card.find();
     },    
-    card: async (parent, { name }) => {
-      return await Card.findOne({ name: name });
+    card: async (parent, { val }) => {
+      return await Card.findOne({ val: val });
     },
   },
 
