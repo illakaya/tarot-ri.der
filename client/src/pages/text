@@ -1,33 +1,24 @@
 import { useState, useEffect } from "react";
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Form, Input, Button, Col, Row } from 'antd';
 import { QUERY_CARD } from '../utils/queries';
-import Auth from '../utils/auth'; // To save data to the user
+import Auth from '../utils/auth'
 import { saveSelectedCardIds } from '../utils/localStorage';
 
 const DrawCards = () => {
-  // Shuffle function to randomize array order
+
   const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
 
   const [form] = Form.useForm();
-  const [isFormDisabled, setIsFormDisabled] = useState(false); // State to manage form input disable
+  const [isFormDisabled, setIsFormDisabled] = useState(false)
   const [isDeckDisabled, setIsDeckDisabled] = useState(false);
   const [cards, setCards] = useState(shuffleArray(Array.from({ length: 78 }, (_, i) => ({ id: i }))));
   const [selectedCards, setSelectedCards] = useState([]);
   const [cardData, setCardData] = useState({});
-  // Using Array method in JS to create a new array of length 78 of undefined elements
-  // map into the array, assigning it a value from 1 to 78 inclusive
-  // since the elements are undefined, use _ to represent the element, then using its index, map the index + 1
 
-  const [loadCard, { loading: queryLoading, data: queryData, error: queryError }] = useLazyQuery(QUERY_CARD);
-
-  useEffect(() => {
-    if (selectedCards.length > 0) {
-      const cardId = parseInt(selectedCards[selectedCards.length - 1], 10);
-      console.log('Loading card with ID:', cardId);
-      loadCard({ variables: { val: cardId } });
-    }
-  }, [selectedCards, loadCard]);
+  const { loading: queryLoading, data: queryData, refetch } = useQuery(QUERY_CARD, {
+    skip: true
+  });
 
   useEffect(() => {
     console.log('Card Data:', cardData);
@@ -35,54 +26,51 @@ const DrawCards = () => {
   }, [cardData, selectedCards]);
 
   useEffect(() => {
+    if (selectedCards.length > 0) {
+      const cardId = selectedCards[selectedCards.length - 1];
+      refetch({ val: parseInt(cardId) });
+    }
+  }, [selectedCards, refetch]);
+
+  useEffect(() => {
     if (queryData && queryData.card) {
-      const card = queryData.card;
-      if (card && card.val) {
-        setCardData(prev => ({
-          ...prev,
-          [card.val]: card
-        }));
-      } else {
-        console.error('Card data is missing a val field:', card);
-      }
+      setCardData(prev => ({
+        ...prev,
+        [queryData.card.val]: queryData.card
+      }));
     }
   }, [queryData]);
 
   const shuffleCards = () => setCards(shuffleArray([...cards]));
 
   const selectCard = async (event, index) => {
-    event.preventDefault(); // Prevent default behaviour
     if (selectedCards.length >= 3) return;
     
-    const cardId = parseInt(event.currentTarget.getAttribute('data-id'));
-    const newSelectedCards = [...selectedCards, cardId.toString()];
+    const cardId = event.currentTarget.getAttribute('data-id');
+    const newSelectedCards = [...selectedCards, cardId];
     
-    // update selected cards & Save the updated selected card IDs to local storage
+
     setSelectedCards(newSelectedCards);
     saveSelectedCardIds(newSelectedCards);
     
-    // Hide the card
+
     const updatedCards = cards.map((card, i) =>
       i === index ? { ...card, hidden: true } : card
     );
     setCards(updatedCards);
-    // After selecting the 3rd card, disable the deck
+
     if (selectedCards.length === 2) setIsDeckDisabled(true);
-    // Disable the form input after the first card is selected
+
     if (selectedCards.length === 0) setIsFormDisabled(true);
   };
 
   const styles = {
     fullWidth: { width: "100%", },
     input: { maxWidth: "650px", textAlign: "center", },
-    // Prevent clicks and interactions & visually indicate that it's disabled
+
     buttonDisabled: { width: "fit-content", pointerEvents: "none", opacity: 0.5, },
     tarotDeckDisabled: { pointerEvents: "none", opacity: 0.5, }
   };
-
-  // Handle loading and error states
-  if (queryLoading) return <p>Loading...</p>;
-  if (queryError) return <p>Error: {queryError.message}</p>;
 
   return (
     <main>
@@ -95,7 +83,6 @@ const DrawCards = () => {
         layout="vertical"
         style={styles.fullWidth}
         disabled={isFormDisabled}
-        onSubmit={(e) => e.preventDefault()} 
       >
         <Form.Item name="queryQuestion" >
           <Input placeholder="Enter your query here (optional)" style={styles.input} />
