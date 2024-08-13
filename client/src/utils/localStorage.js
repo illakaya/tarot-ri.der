@@ -1,15 +1,15 @@
-export const getSavedCardIds = () => {
-  const savedCardIds = localStorage.getItem('saved_cards')
-    ? JSON.parse(localStorage.getItem('saved_cards'))
+export const getSelectedCardInfo = () => {
+  const savedCardInfo = localStorage.getItem('card_info')
+    ? JSON.parse(localStorage.getItem('card_info'))
     : [];
-  return savedCardIds;
+  return savedCardInfo;
 };
 
 // Save the selected card IDs to local storage
-export const saveSelectedCardIds = (cardIdArr) => {
+export const saveSelectedCardInfo = (cardIdArr) => {
   if (cardIdArr.length) {
-    localStorage.setItem('selected_cards', JSON.stringify(cardIdArr));
+    localStorage.setItem('card_info', JSON.stringify(cardIdArr));
   } else {
-    localStorage.removeItem('selected_cards');
+    localStorage.removeItem('card_info');
   }
 };

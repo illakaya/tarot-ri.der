@@ -2,19 +2,22 @@ import { useState, useEffect } from "react";
 import { useLazyQuery } from '@apollo/client';
 import { Form, Input, Button, Col, Row } from 'antd';
 import { QUERY_CARD } from '../utils/queries';
+import { retrieveOneCard } from '../utils/API';
 import Auth from '../utils/auth'; // To save data to the user
-import { saveSelectedCardIds } from '../utils/localStorage';
+// import { saveSelectedCardInfo } from '../utils/localStorage';
 
 const DrawCards = () => {
   // Shuffle function to randomize array order
   const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
 
   const [form] = Form.useForm();
-  const [isFormDisabled, setIsFormDisabled] = useState(false); // State to manage form input disable
-  const [isDeckDisabled, setIsDeckDisabled] = useState(false);
-  const [cards, setCards] = useState(shuffleArray(Array.from({ length: 78 }, (_, i) => ({ id: i }))));
+  const [drawStart, setDrawStart] = useState(false); // State to manage form input disable
+  const [fullDraw, setFullDraw] = useState(false);
+  const [revMean, setRevMean] = useState(true);
+  const [cards, setCards] = useState(shuffleArray(Array.from({ length: 78 }, (_, i) => ({ id: i + 1 }))));
   const [selectedCards, setSelectedCards] = useState([]);
   const [cardData, setCardData] = useState({});
+  const [meaningCards, setMeaningCards] = useState([]);
   // Using Array method in JS to create a new array of length 78 of undefined elements
   // map into the array, assigning it a value from 1 to 78 inclusive
   // since the elements are undefined, use _ to represent the element, then using its index, map the index + 1
@@ -32,7 +35,7 @@ const DrawCards = () => {
   useEffect(() => {
     console.log('Card Data:', cardData);
     console.log('Selected Cards:', selectedCards);
-  }, [cardData, selectedCards]);
+  }, [cardData]);
 
   useEffect(() => {
     if (queryData && queryData.card) {
@@ -51,15 +54,13 @@ const DrawCards = () => {
   const shuffleCards = () => setCards(shuffleArray([...cards]));
 
   const selectCard = async (event, index) => {
-    event.preventDefault(); // Prevent default behaviour
     if (selectedCards.length >= 3) return;
     
-    const cardId = parseInt(event.currentTarget.getAttribute('data-id'));
-    const newSelectedCards = [...selectedCards, cardId.toString()];
+    const cardId = event.currentTarget.getAttribute('data-id').toString();
+    const newSelectedCards = [...selectedCards, cardId];
     
     // update selected cards & Save the updated selected card IDs to local storage
     setSelectedCards(newSelectedCards);
-    saveSelectedCardIds(newSelectedCards);
     
     // Hide the card
     const updatedCards = cards.map((card, i) =>
@@ -67,22 +68,43 @@ const DrawCards = () => {
     );
     setCards(updatedCards);
     // After selecting the 3rd card, disable the deck
-    if (selectedCards.length === 2) setIsDeckDisabled(true);
+    if (selectedCards.length === 2) {
+      setFullDraw(true);
+      setRevMean(false);
+    }
     // Disable the form input after the first card is selected
-    if (selectedCards.length === 0) setIsFormDisabled(true);
+    if (selectedCards.length === 0) setDrawStart(true);
   };
 
-  const styles = {
-    fullWidth: { width: "100%", },
-    input: { maxWidth: "650px", textAlign: "center", },
-    // Prevent clicks and interactions & visually indicate that it's disabled
-    buttonDisabled: { width: "fit-content", pointerEvents: "none", opacity: 0.5, },
-    tarotDeckDisabled: { pointerEvents: "none", opacity: 0.5, }
+  const revealMeaning = async (event) => {
+    const meanings = [];
+    for (let i = 0; i < 3; i++) {
+      try {
+        const response = await retrieveOneCard(cardData[selectedCards[i]].name);
+        if (!response.ok) {
+          throw new Error('something went wrong!');
+        }
+        const { card } = await response.json();
+        console.log(card);
+        meanings.push(card);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    // saveSelectedCardInfo(meaningCards);
+    setMeaningCards(meanings);  // Update the state with the fetched card meanings
+    setRevMean(true);
   };
 
   // Handle loading and error states
-  if (queryLoading) return <p>Loading...</p>;
-  if (queryError) return <p>Error: {queryError.message}</p>;
+  // if (queryLoading) return <p>Loading...</p>; this makes it look like the whole page is reloading so remove
+  if (queryError) return <h1>Error: {queryError.message}</h1>;
+
+  const styles = {
+    disabled: { pointerEvents: "none", opacity: 0.5 },
+    fullWidth: { width: "100%" },
+    input: { maxWidth: "650px", textAlign: "center" }
+  };
 
   return (
     <main>
@@ -94,22 +116,22 @@ const DrawCards = () => {
         name="query"
         layout="vertical"
         style={styles.fullWidth}
-        disabled={isFormDisabled}
-        onSubmit={(e) => e.preventDefault()} 
+        disabled={drawStart}
+        onFinish={(values) => console.log(values)}
       >
         <Form.Item name="queryQuestion" >
           <Input placeholder="Enter your query here (optional)" style={styles.input} />
         </Form.Item>
       </Form>
       <Button 
-        style={isFormDisabled ? styles.buttonDisabled : {}}
+        style={drawStart ? styles.disabled : {}}
         onClick={shuffleCards}
       >
         Shuffle
       </Button>
       <div 
         className="tarot-deck"
-        style={isDeckDisabled ? styles.tarotDeckDisabled : {}}
+        style={fullDraw ? styles.disabled : {}}
       >
       
       {cards.map((card, index) => (
@@ -136,11 +158,23 @@ const DrawCards = () => {
           {selectedCards[0] && cardData[selectedCards[0]] && (
             <img className="chosen-card" src={`/images/${cardData[selectedCards[0]].name}.png`} alt="tarot card" />
           )}
+          {meaningCards.length > 0 && (
+            <div>
+              <h3>{meaningCards[0].name}</h3>
+              <p>{meaningCards[0].meaning_up}</p>
+            </div>
+          )}
         </Col>
         <Col span={8}>
           <h2>Situation</h2>
           {selectedCards[1] && cardData[selectedCards[1]] && (
             <img className="chosen-card" src={`/images/${cardData[selectedCards[1]].name}.png`} alt="tarot card" />
+          )}
+          {meaningCards.length > 0 && (
+            <div>
+              <h3>{meaningCards[1].name}</h3>
+              <p>{meaningCards[1].meaning_up}</p>
+            </div>
           )}
         </Col>
         <Col span={8}>
@@ -148,8 +182,20 @@ const DrawCards = () => {
           {selectedCards[2] && cardData[selectedCards[2]] && (
             <img className="chosen-card" src={`/images/${cardData[selectedCards[2]].name}.png`} alt="tarot card" />
           )}
+          {meaningCards.length > 0 && (
+            <div>
+              <h3>{meaningCards[2].name}</h3>
+              <p>{meaningCards[2].meaning_up}</p>
+            </div>
+          )}
         </Col>
       </Row>
+      <Button 
+        style={revMean ? {display: "none"} : {}}
+        onClick={revealMeaning}
+      >
+        Reveal Meaning
+      </Button>
     </main>
   );
 };
