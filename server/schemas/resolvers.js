@@ -1,5 +1,5 @@
 // Import the models and authorisation
-const { User, Card } = require("../models");
+const { User, Card, Draw } = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
@@ -20,9 +20,9 @@ const resolvers = {
     card: async (parent, { val }) => {
       return await Card.findOne({ val: val });
     },
-    arrayOfCards: async(parent, { cardVal }) => {
-      return Card.find({ val: { $in: cardVal } })
-    }
+    // arrayOfCards: async(parent, { cardVal }) => {
+    //   return Card.find({ val: { $in: cardVal } })
+    // }
   },
 
   Mutation: {
@@ -45,11 +45,12 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    saveDraw: async (parent, { drawData }, context) => {
+    saveDraw: async (parent, { question, cardsDrawn }, context) => {
       if (context.user) {
+        const newDraw = new Draw({question, cardsDrawn});
         return User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { draws: drawData } },
+          { $push: { draws: newDraw } },
           // this will return the new object instead of the old in GraphQL
           { new: true, runValidators: true }
         );
