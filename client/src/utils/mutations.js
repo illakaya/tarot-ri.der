@@ -25,3 +25,18 @@ export const ADD_USER = gql`
     }
   }
 `;
+
+export const SAVE_DRAW = gql`
+  mutation saveDraw($drawData: DrawInput!) {
+    saveDraw(drawData: $drawData) {
+      _id
+      prefName
+      email
+      draws {
+        date
+        question
+        cardsDrawn
+      }
+    }
+  }
+`;

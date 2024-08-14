@@ -2,8 +2,6 @@
 const mongoose = require("mongoose");
 // Retrieve Schema from mongoose
 const { Schema } = mongoose;
-// import schema from Card.js
-const Card = require('./Card');
 
 // Define structure of the Draw document
 const drawSchema = new Schema({
@@ -21,7 +19,9 @@ const drawSchema = new Schema({
     type: String,
     trim: true,    
   },
-  cardsDrawn: [Card.schema],
+  cardsDrawn: [
+    {type: String},
+  ],
 });
 
 const Draw = mongoose.model("Draw", drawSchema);
