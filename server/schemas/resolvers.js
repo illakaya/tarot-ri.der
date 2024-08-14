@@ -20,6 +20,9 @@ const resolvers = {
     card: async (parent, { val }) => {
       return await Card.findOne({ val: val });
     },
+    arrayOfCards: async(parent, { cardVal }) => {
+      return Card.find({ val: { $in: cardVal } })
+    }
   },
 
   Mutation: {

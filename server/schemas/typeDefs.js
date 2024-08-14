@@ -28,6 +28,7 @@ const typeDefs = `
   type Query {
     me: User
     draw(_id: ID!): Draw 
+    arrayOfCards(cardVals: [Int]): [Card]
     card(val: Int!): Card
     allCards: [Card]
   }
