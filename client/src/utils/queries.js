@@ -33,3 +33,12 @@ export const QUERY_ARRAY_OF_CARDS = gql`
     }
   }
 `
+
+export const ALL_CARDS = gql`
+  query AllCards {
+    allCards {
+      name
+      val
+    }
+  }
+`
