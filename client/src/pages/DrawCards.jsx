@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { Form, Input, Button, Col, Row } from 'antd';
 import { QUERY_CARD } from '../utils/queries';
+import { SAVE_DRAW } from '../utils/mutations';
 import { retrieveOneCard } from '../utils/API';
-import Auth from '../utils/auth'; // To save data to the user
+import Auth from '../utils/auth'; 
+// To save data to the user
 // import { saveSelectedCardInfo } from '../utils/localStorage';
 
 const DrawCards = () => {
@@ -11,6 +13,7 @@ const DrawCards = () => {
   const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
 
   const [form] = Form.useForm();
+  const [questionInput, setQuestionInput] = useState('');
   const [drawStart, setDrawStart] = useState(false); // State to manage form input disable
   const [fullDraw, setFullDraw] = useState(false);
   const [revMean, setRevMean] = useState(true);
@@ -18,6 +21,7 @@ const DrawCards = () => {
   const [selectedCards, setSelectedCards] = useState([]);
   const [cardData, setCardData] = useState({});
   const [meaningCards, setMeaningCards] = useState([]);
+  const [saveDraw] = useMutation(SAVE_DRAW);
   // Using Array method in JS to create a new array of length 78 of undefined elements
   // map into the array, assigning it a value from 1 to 78 inclusive
   // since the elements are undefined, use _ to represent the element, then using its index, map the index + 1
@@ -35,6 +39,7 @@ const DrawCards = () => {
   useEffect(() => {
     console.log('Card Data:', cardData);
     console.log('Selected Cards:', selectedCards);
+    if(selectedCards.length === 3) handleSaveDraw();
   }, [cardData]);
 
   useEffect(() => {
@@ -52,6 +57,18 @@ const DrawCards = () => {
   }, [queryData]);
 
   const shuffleCards = () => setCards(shuffleArray([...cards]));
+
+  const handleSaveDraw = async () => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+    console.log(`question: ${questionInput}`);
+    console.log(`cards: ${selectedCards}`);
+    if (!token) return false;
+    try {
+      await saveDraw({ variables: {drawData: {question: questionInput, cardsDrawn: selectedCards}} });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const selectCard = async (event, index) => {
     if (selectedCards.length >= 3) return;
@@ -92,7 +109,8 @@ const DrawCards = () => {
       }
     }
     // saveSelectedCardInfo(meaningCards);
-    setMeaningCards(meanings);  // Update the state with the fetched card meanings
+    // Update the state with the fetched card meanings
+    setMeaningCards(meanings);  
     setRevMean(true);
   };
 
@@ -120,7 +138,12 @@ const DrawCards = () => {
         onFinish={(values) => console.log(values)}
       >
         <Form.Item name="queryQuestion" >
-          <Input placeholder="Enter your query here (optional)" style={styles.input} />
+          <Input 
+            placeholder="Enter your query here (optional)" 
+            style={styles.input}
+            value={questionInput}
+            onChange={(e) => setQuestionInput(e.target.value)}
+          />
         </Form.Item>
       </Form>
       <Button 
