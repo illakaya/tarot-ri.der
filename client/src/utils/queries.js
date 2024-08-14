@@ -24,3 +24,12 @@ export const QUERY_CARD = gql`
     }
   }
 `;
+
+export const QUERY_ARRAY_OF_CARDS = gql`
+  query ArrayOfCards($cardVals: [Int]) {
+    arrayOfCards(cardVals: [$cardVals]) {
+      name
+      val
+    }
+  }
+`
