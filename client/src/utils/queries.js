@@ -19,20 +19,22 @@ export const QUERY_ME = gql`
 export const QUERY_CARD = gql`
   query Card($val: Int!) {
     card (val: $val) {
+      _id
       name
       val
     }
   }
 `;
 
-export const QUERY_ARRAY_OF_CARDS = gql`
-  query ArrayOfCards($cardVals: [Int]) {
-    arrayOfCards(cardVals: [$cardVals]) {
-      name
-      val
-    }
-  }
-`
+// export const QUERY_ARRAY_OF_CARDS = gql`
+//   query ArrayOfCards($cardVals: [Int]) {
+//     arrayOfCards(cardVals: [$cardVals]) {
+//       _id
+//       name
+//       val
+//     }
+//   }
+// `
 
 export const ALL_CARDS = gql`
   query AllCards {

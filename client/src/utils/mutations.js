@@ -27,8 +27,8 @@ export const ADD_USER = gql`
 `;
 
 export const SAVE_DRAW = gql`
-  mutation saveDraw($drawData: DrawInput!) {
-    saveDraw(drawData: $drawData) {
+  mutation saveDraw($question: String, $cardsDrawn: [ID]) {
+    saveDraw(question: $question, cardsDrawn: $cardsDrawn) {
       _id
       prefName
       email

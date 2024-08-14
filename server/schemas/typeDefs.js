@@ -2,6 +2,7 @@
 // Define the types User, Draw and Card
 const typeDefs = `
   type Card {
+    _id: ID
     name: String!
     val: Int!
   }
@@ -28,7 +29,6 @@ const typeDefs = `
   type Query {
     me: User
     draw(_id: ID!): Draw 
-    arrayOfCards(cardVals: [Int]): [Card]
     card(val: Int!): Card
     allCards: [Card]
   }
@@ -36,13 +36,8 @@ const typeDefs = `
   type Mutation {
     addUser(prefName: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    saveDraw(drawData: DrawInput!): User
+    saveDraw(question: String, cardsDrawn: [ID]): User
     deleteDraw(_id: ID!): User
-  }
-
-  input DrawInput {
-    question: String
-    cardsDrawn: [String]
   }
 `
 

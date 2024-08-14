@@ -20,7 +20,10 @@ const drawSchema = new Schema({
     trim: true,    
   },
   cardsDrawn: [
-    {type: String},
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Card'
+    },
   ],
 });
 

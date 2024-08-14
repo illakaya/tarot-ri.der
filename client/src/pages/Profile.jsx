@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { retrieveOneCard } from '../utils/API';
-import { QUERY_ME, QUERY_ARRAY_OF_CARDS } from '../utils/queries';
+import { QUERY_ME, /*QUERY_ARRAY_OF_CARDS*/ } from '../utils/queries';
 import { Card, Space, Row, Col, Spin } from 'antd';
 import Auth from '../utils/auth';
 
 const Profile = () => {
   const { loading, data } = useQuery(QUERY_ME);
-  const [getCards, { loading: cardLoading, data: cardsData, error: cardError }] = useLazyQuery(QUERY_ARRAY_OF_CARDS);
+  // const [getCards, { loading: cardLoading, data: cardsData, error: cardError }] = useLazyQuery(QUERY_ARRAY_OF_CARDS);
   const [cardsMap, setCardsMap] = useState({});
   
   const userData = data?.me || {};

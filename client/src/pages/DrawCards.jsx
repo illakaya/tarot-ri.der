@@ -64,7 +64,7 @@ const DrawCards = () => {
     console.log(`cards: ${selectedCards}`);
     if (!token) return false;
     try {
-      await saveDraw({ variables: {drawData: {question: questionInput, cardsDrawn: selectedCards}} });
+      await saveDraw({ variables: {drawData: {question: questionInput, cardsDrawn: selectedCards.map((caaards) => cardData[caaards]._id)}} });
     } catch (err) {
       console.error(err);
     }
