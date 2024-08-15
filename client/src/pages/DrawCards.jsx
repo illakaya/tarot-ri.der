@@ -22,6 +22,9 @@ const DrawCards = () => {
   const [cardData, setCardData] = useState({});
   const [meaningCards, setMeaningCards] = useState([]);
   const [saveDraw] = useMutation(SAVE_DRAW);
+  const [shuffling, setShuffling] = useState(false);
+  const [dimmedCards, setDimmedCards] = useState([]);
+
   // Using Array method in JS to create a new array of length 78 of undefined elements
   // map into the array, assigning it a value from 1 to 78 inclusive
   // since the elements are undefined, use _ to represent the element, then using its index, map the index + 1
@@ -56,7 +59,19 @@ const DrawCards = () => {
     }
   }, [queryData]);
 
-  const shuffleCards = () => setCards(shuffleArray([...cards]));
+  const shuffleCards = () => {
+    setShuffling(true);
+    // Randomly select a few cards to dim
+    const randomIndexes = Array.from({ length: Math.floor(cards.length / 4) }, () => Math.floor(Math.random() * cards.length));
+    setDimmedCards(randomIndexes);
+    // Shuffle the deck
+    setCards(shuffleArray([...cards]));
+    // After a short delay, remove the dimmed effect and stop shuffling
+    setTimeout(() => {
+      setDimmedCards([]);
+      setShuffling(false);
+    }, 1000);
+  };
 
   const handleSaveDraw = async () => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -163,7 +178,7 @@ const DrawCards = () => {
             <div
               key={card.id}
               data-id={card.id}
-              className="tarot-card"
+              className={`tarot-card ${dimmedCards.includes(index) ? 'shuffle' : ''}`}
               onClick={(event) => selectCard(event, index)}
               style={{ left: `${index/78*80}vw` }}
             >
