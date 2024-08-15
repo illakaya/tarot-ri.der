@@ -7,7 +7,14 @@ const resolvers = {
     // get the user by their id context
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id });
+        return User.findOne({ _id: context.user._id })
+          .populate({
+            path: 'draws',
+            populate: {
+              path: 'cardsDrawn',
+              model: 'Card'
+            }
+          });
       }
       throw new AuthenticationError("You need to be logged in!");
     },
@@ -48,12 +55,19 @@ const resolvers = {
     saveDraw: async (parent, { question, cardsDrawn }, context) => {
       if (context.user) {
         const newDraw = new Draw({question, cardsDrawn});
+        await newDraw.save();
         return User.findByIdAndUpdate(
           { _id: context.user._id },
           { $push: { draws: newDraw } },
           // this will return the new object instead of the old in GraphQL
           { new: true, runValidators: true }
-        );
+        ).populate({
+          path: 'draws',
+          populate: {
+            path: 'cardsDrawn',
+            model: 'Card',
+          },
+        });
       }
       throw AuthenticationError;
     },

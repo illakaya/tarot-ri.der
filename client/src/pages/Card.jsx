@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { ALL_CARDS } from '../utils/queries';
 import { Col, Row } from 'antd';
@@ -6,6 +5,7 @@ import { Col, Row } from 'antd';
 const Card = () => {
   const { loading, data } = useQuery(ALL_CARDS);
   const cardData = data?.allCards || {};
+  if (loading) return <main><h1>Loading...</h1></main>
   return (
     <main className="container">
       <h1>All Cards</h1>

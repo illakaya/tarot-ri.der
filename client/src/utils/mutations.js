@@ -35,7 +35,9 @@ export const SAVE_DRAW = gql`
       draws {
         date
         question
-        cardsDrawn
+        cardsDrawn {
+          name
+        }
       }
     }
   }
