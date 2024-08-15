@@ -68,6 +68,10 @@ h6 {
   height: 280px;
 }
 
+a {
+  color: #7E5A52;
+}
+
 /* Media query for phone screens */
 @media (max-width: 600px) { /* Adjust the max-width value as needed for phone screens */
   .tarot-deck {
