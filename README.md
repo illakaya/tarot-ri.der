@@ -38,7 +38,8 @@ No special instructions are needed to use the application.
 Thank you to:
 
 - The Coding Bootcamp at the University of Sydney for providing an opportunity for students to develop their understanding of front-end and back-end web development.
-- Instructor Frank Fu and teacher assistant Sean Butcher for providing the foundational knowledge required to attempt the project
+- Instructor Frank Fu and teacher assistant Sean Butcher for providing the foundational knowledge required to attempt the project.
+- Icons designed by [Freepik](https://www.freepik.com/).
 
 ## License
 
