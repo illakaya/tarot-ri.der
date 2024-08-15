@@ -10,7 +10,9 @@ export const QUERY_ME = gql`
       draws {
         date
         question
-        cardsDrawn
+        cardsDrawn {
+          name
+        }
       }
     }
   }

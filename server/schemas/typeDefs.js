@@ -11,7 +11,7 @@ const typeDefs = `
     _id: ID
     date: String
     question: String
-    cardsDrawn: [String]
+    cardsDrawn: [Card]
   }
 
   type User {

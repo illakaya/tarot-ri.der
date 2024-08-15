@@ -61,10 +61,11 @@ const DrawCards = () => {
   const handleSaveDraw = async () => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
     console.log(`question: ${questionInput}`);
-    console.log(`cards: ${selectedCards}`);
+    console.log(`cards: ${typeof selectedCards[0]}`);
+    console.log(`cards: ${cardData[selectedCards[0]]._id}`);
     if (!token) return false;
     try {
-      await saveDraw({ variables: {drawData: {question: questionInput, cardsDrawn: selectedCards.map((caaards) => cardData[caaards]._id)}} });
+      await saveDraw({ variables: {question: questionInput, cardsDrawn: selectedCards.map((caaards) => cardData[caaards]._id)}});
     } catch (err) {
       console.error(err);
     }

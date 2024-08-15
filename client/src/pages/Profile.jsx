@@ -7,27 +7,9 @@ import Auth from '../utils/auth';
 
 const Profile = () => {
   const { loading, data } = useQuery(QUERY_ME);
-  // const [getCards, { loading: cardLoading, data: cardsData, error: cardError }] = useLazyQuery(QUERY_ARRAY_OF_CARDS);
-  const [cardsMap, setCardsMap] = useState({});
   
   const userData = data?.me || {};
 
-  useEffect(() => {
-    if (userData.draws && userData.draws.length > 0) {
-      const allCardIds = userData.draws.flatMap(draw => draw.cardsDrawn);
-      getCards({ variables: { cardIds: allCardIds.map(id => parseInt(id, 10)) } });
-    }
-  }, [userData, getCards]);
-
-  useEffect(() => {
-    if (cardsData && cardsData.cardsByIds) {
-      const newCardsMap = cardsData.cardsByIds.reduce((acc, card) => {
-        acc[card.val] = card;
-        return acc;
-      }, {});
-      setCardsMap(newCardsMap);
-    }
-  }, [cardsData]);
 
   if (!Auth.loggedIn()) {
     return (
@@ -49,26 +31,18 @@ const Profile = () => {
       <Space direction="vertical" size="large" style={{width: "100%"}}>
         {userData.draws.map(draw => (
           <Card
+            size="small"
             key={draw._id}
             title={draw.question ? draw.question : "No query"}
-            loading={cardLoading}
           >
-            <p>Query was made on {new Date(parseInt(draw.date)).toLocaleString()}</p>
-            <Row key={draw._id+100}>
-              
-                {draw.cardsDrawn.map(cardVal => {
-                  const card = cardsMap[cardVal];
-                  return card ? (
-                    <Col span={8} key={cardVal+5000}>
-                    <div key={cardVal}>
-                      <img src={`/images/${card.name}.png`} alt={card.name} style={{ width: 100 }} />
-                    </div>
-                    </Col>
-                  ) : (
-                    <Col span={8}><p key={cardVal+50000}>Loading card...</p></Col>
-                  );
-                })}
-              
+            <p>{new Date(parseInt(draw.date)).toLocaleString()}</p>
+            <Row>
+              {draw.cardsDrawn.map(card => (
+                <Col span={8}>
+                  {/* <p>{card.name}</p> */}
+                  <img className="chosen-card" src={`/images/${card.name}.png`} alt="tarot card" />
+                </Col>
+              ))}
             </Row>
           </Card>
         ))}
